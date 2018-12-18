@@ -1,19 +1,59 @@
-# Welcome!
-
-This C++ template lets you get started quickly with a simple one-page playground.
-
+# 
 ```C++ runnable
+#include <cstdlib>
 #include <iostream>
+#include <new>
 
-using namespace std;
+static std::size_t alloc{0};
+static std::size_t dealloc{0};
 
-int main() 
-{
-    cout << "Hello, World!";
-    return 0;
+void* operator new(std::size_t sz){
+    alloc+= 1;
+    return std::malloc(sz);
 }
-```
 
-# Advanced usage
+void operator delete(void* ptr) noexcept{
+    dealloc+= 1;
+    std::free(ptr);
+}
 
-If you want a more complex example (external libraries, viewers...), use the [Advanced C++ template](https://tech.io/select-repo/598)
+void getInfo(){
+    
+    std::cout << std::endl;
+ 
+    std::cout << "Number of allocations: " << alloc << std::endl;
+    std::cout << "Number of deallocations: " << dealloc << std::endl;
+    
+    std::cout << std::endl;
+}
+
+#include <iostream>
+#include <string>
+
+class MyClass{
+  float* p= new float[100];
+};
+
+class MyClass2{
+  int five= 5;
+  std::string s= "hello";
+};
+
+
+int main(){
+    
+    int* myInt= new int(1998);
+    double* myDouble= new double(3.14);
+    double* myDoubleArray= new double[2]{1.1,1.2};
+    
+    MyClass* myClass= new MyClass;
+    MyClass2* myClass2= new MyClass2;
+    
+    delete myDouble;
+    delete [] myDoubleArray;
+    delete myClass;
+    delete myClass2;
+    
+   getInfo();
+    
+}
